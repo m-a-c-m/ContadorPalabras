@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://words.miguelacm.es";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://miguelacm.es/tools/word-counter";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -68,7 +68,7 @@ export default function RootLayout({
           </a>
           {" · "}
           <a
-            href="https://github.com/m-a-c-m/word-counter"
+            href="https://github.com/m-a-c-m/ContadorPalabras"
             target="_blank"
             rel="noopener noreferrer"
             className="text-text-muted/60 transition-colors hover:text-text-muted underline-offset-2 hover:underline"

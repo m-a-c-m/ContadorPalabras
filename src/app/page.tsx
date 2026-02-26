@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import WordCounter from "@/components/WordCounter";
 import { MdTextFields } from "react-icons/md";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://words.miguelacm.es";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://miguelacm.es/tools/word-counter";
+const EMBED_URL = process.env.NEXT_PUBLIC_EMBED_URL || "https://miguelacm.es/embed/word-counter";
 
 export const metadata: Metadata = {
   title: "Contador de Palabras Gratis Online",
@@ -193,7 +194,7 @@ export default function Home() {
             <div className="mb-3 rounded-lg bg-black/40 p-3">
               <p className="mb-1 text-xs text-text-muted/60">Iframe (integración directa):</p>
               <code className="text-xs text-green-400 break-all">
-                {`<iframe src="${SITE_URL}" width="100%" height="700" style="border:none;border-radius:12px;" title="Contador de Palabras — miguelacm.es" loading="lazy"></iframe>`}
+                {`<iframe src="${EMBED_URL}" width="100%" height="700" style="border:none;border-radius:12px;" title="Contador de Palabras — miguelacm.es" loading="lazy"></iframe>`}
               </code>
             </div>
             <div className="rounded-lg bg-black/40 p-3">
