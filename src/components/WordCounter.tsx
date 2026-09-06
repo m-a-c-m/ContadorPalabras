@@ -2,6 +2,10 @@
 
 import { useState, useMemo } from "react";
 
+interface Props {
+  locale?: string;
+}
+
 function analyze(text: string) {
   const trimmed = text.trim();
   const words = trimmed === "" ? [] : trimmed.split(/\s+/).filter(Boolean);
@@ -25,30 +29,32 @@ function analyze(text: string) {
   return { words: words.length, chars: text.length, charsNoSpaces, sentences, paragraphs, uniqueWords, longest: longest.replace(/\W/g, ""), topKeywords };
 }
 
-function formatTime(words: number, wpm: number): string {
+function formatTime(words: number, wpm: number, isEs: boolean): string {
   if (words === 0) return "—";
   const totalSeconds = Math.ceil((words / wpm) * 60);
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
-  if (minutes === 0) return `${seconds} seg`;
+  const s = isEs ? "seg" : "sec";
+  if (minutes === 0) return `${seconds} ${s}`;
   if (seconds === 0) return `${minutes} min`;
-  return `${minutes} min ${seconds} seg`;
+  return `${minutes} min ${seconds} ${s}`;
 }
 
 const READING_PRESETS = [
-  { label: "Lento",  wpm: 150 },
-  { label: "Normal", wpm: 200 },
-  { label: "Rápido", wpm: 250 },
+  { label: { es: "Lento", en: "Slow" },   wpm: 150 },
+  { label: { es: "Normal", en: "Normal" }, wpm: 200 },
+  { label: { es: "Rápido", en: "Fast" },  wpm: 250 },
 ];
 
 const SPEAKING_PRESETS = [
-  { label: "Lento",  wpm: 100 },
-  { label: "Normal", wpm: 130 },
-  { label: "Rápido", wpm: 160 },
+  { label: { es: "Lento", en: "Slow" },   wpm: 100 },
+  { label: { es: "Normal", en: "Normal" }, wpm: 130 },
+  { label: { es: "Rápido", en: "Fast" },  wpm: 160 },
 ];
 
-export default function WordCounter() {
+export default function WordCounter({ locale = "es" }: Props) {
   const [text, setText] = useState("");
+  const isEs = locale === "es";
 
   const [readingWpm, setReadingWpm] = useState(200);
   const [readingInput, setReadingInput] = useState("200");
@@ -61,11 +67,17 @@ export default function WordCounter() {
     val: string,
     setInput: (v: string) => void,
     setWpm: (v: number) => void,
+    current: number
   ) => {
     setInput(val);
     const num = parseInt(val);
     if (!isNaN(num) && num >= 1 && num <= 2000) setWpm(num);
   };
+
+  const handleWpmBlur = (
+    setInput: (v: string) => void,
+    wpm: number
+  ) => setInput(String(wpm));
 
   const applyPreset = (
     wpm: number,
@@ -74,12 +86,12 @@ export default function WordCounter() {
   ) => { setWpm(wpm); setInput(String(wpm)); };
 
   const statCards = [
-    { value: stats.words,         label: "Palabras",     color: "text-primary"    },
-    { value: stats.chars,         label: "Caracteres",   color: "text-secondary"  },
-    { value: stats.charsNoSpaces, label: "Sin espacios", color: "text-accent"     },
-    { value: stats.sentences,     label: "Frases",       color: "text-green-400"  },
-    { value: stats.paragraphs,    label: "Párrafos",     color: "text-yellow-400" },
-    { value: stats.uniqueWords,   label: "Únicas",       color: "text-pink-400"   },
+    { value: stats.words,        label: isEs ? "Palabras"     : "Words",      color: "text-primary"   },
+    { value: stats.chars,        label: isEs ? "Caracteres"   : "Characters", color: "text-secondary" },
+    { value: stats.charsNoSpaces,label: isEs ? "Sin espacios" : "No spaces",  color: "text-accent"    },
+    { value: stats.sentences,    label: isEs ? "Frases"       : "Sentences",  color: "text-green-400" },
+    { value: stats.paragraphs,   label: isEs ? "Párrafos"     : "Paragraphs", color: "text-yellow-400"},
+    { value: stats.uniqueWords,  label: isEs ? "Únicas"       : "Unique",     color: "text-pink-400"  },
   ];
 
   return (
@@ -89,7 +101,7 @@ export default function WordCounter() {
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Escribe o pega tu texto aquí..."
+          placeholder={isEs ? "Escribe o pega tu texto aquí..." : "Type or paste your text here..."}
           rows={10}
           className="w-full resize-none rounded-2xl border border-border/40 bg-background/80 px-5 py-4 text-text placeholder-text-muted/40 outline-none transition-all focus:border-primary/50 focus:shadow-[0_0_20px_rgba(0,212,255,0.08)] text-sm leading-relaxed"
         />
@@ -98,7 +110,7 @@ export default function WordCounter() {
             onClick={() => setText("")}
             className="absolute right-4 top-4 rounded-lg px-3 py-1 text-xs text-text-muted/60 transition-colors hover:text-accent"
           >
-            Limpiar
+            {isEs ? "Limpiar" : "Clear"}
           </button>
         )}
       </div>
@@ -119,10 +131,12 @@ export default function WordCounter() {
         <div className="rounded-xl border border-border/30 bg-surface/50 px-5 py-4 space-y-3">
           <div className="flex items-center gap-2">
             <span className="text-xl">📖</span>
-            <p className="text-xs font-medium text-text-muted">Tiempo de lectura</p>
+            <p className="text-xs font-medium text-text-muted">
+              {isEs ? "Tiempo de lectura" : "Reading time"}
+            </p>
           </div>
           <p className="text-2xl font-bold text-primary tabular-nums">
-            {formatTime(stats.words, readingWpm)}
+            {formatTime(stats.words, readingWpm, isEs)}
           </p>
           <div className="flex gap-1.5">
             {READING_PRESETS.map((p) => (
@@ -135,7 +149,7 @@ export default function WordCounter() {
                     : "border-border/30 bg-background/50 text-text-muted hover:text-text"
                 }`}
               >
-                {p.label}
+                {p.label[isEs ? "es" : "en"]}
               </button>
             ))}
           </div>
@@ -145,11 +159,11 @@ export default function WordCounter() {
               min={1}
               max={2000}
               value={readingInput}
-              onChange={(e) => handleWpmInput(e.target.value, setReadingInput, setReadingWpm)}
-              onBlur={() => setReadingInput(String(readingWpm))}
+              onChange={(e) => handleWpmInput(e.target.value, setReadingInput, setReadingWpm, readingWpm)}
+              onBlur={() => handleWpmBlur(setReadingInput, readingWpm)}
               className="w-20 rounded-lg border border-border/30 bg-background/50 px-2 py-1 text-xs text-center text-text outline-none focus:border-primary/40 tabular-nums"
             />
-            <span className="text-xs text-text-muted">pal/min</span>
+            <span className="text-xs text-text-muted">{isEs ? "pal/min" : "wpm"}</span>
           </div>
         </div>
 
@@ -157,10 +171,12 @@ export default function WordCounter() {
         <div className="rounded-xl border border-border/30 bg-surface/50 px-5 py-4 space-y-3">
           <div className="flex items-center gap-2">
             <span className="text-xl">🎙️</span>
-            <p className="text-xs font-medium text-text-muted">Tiempo de habla</p>
+            <p className="text-xs font-medium text-text-muted">
+              {isEs ? "Tiempo de habla" : "Speaking time"}
+            </p>
           </div>
           <p className="text-2xl font-bold text-secondary tabular-nums">
-            {formatTime(stats.words, speakingWpm)}
+            {formatTime(stats.words, speakingWpm, isEs)}
           </p>
           <div className="flex gap-1.5">
             {SPEAKING_PRESETS.map((p) => (
@@ -173,7 +189,7 @@ export default function WordCounter() {
                     : "border-border/30 bg-background/50 text-text-muted hover:text-text"
                 }`}
               >
-                {p.label}
+                {p.label[isEs ? "es" : "en"]}
               </button>
             ))}
           </div>
@@ -183,11 +199,11 @@ export default function WordCounter() {
               min={1}
               max={2000}
               value={speakingInput}
-              onChange={(e) => handleWpmInput(e.target.value, setSpeakingInput, setSpeakingWpm)}
-              onBlur={() => setSpeakingInput(String(speakingWpm))}
+              onChange={(e) => handleWpmInput(e.target.value, setSpeakingInput, setSpeakingWpm, speakingWpm)}
+              onBlur={() => handleWpmBlur(setSpeakingInput, speakingWpm)}
               className="w-20 rounded-lg border border-border/30 bg-background/50 px-2 py-1 text-xs text-center text-text outline-none focus:border-secondary/40 tabular-nums"
             />
-            <span className="text-xs text-text-muted">pal/min</span>
+            <span className="text-xs text-text-muted">{isEs ? "pal/min" : "wpm"}</span>
           </div>
         </div>
       </div>
@@ -197,13 +213,13 @@ export default function WordCounter() {
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {stats.longest && (
             <div className="rounded-xl border border-border/30 bg-surface/50 px-5 py-4">
-              <p className="mb-2 text-xs font-medium text-text-muted">Palabra más larga</p>
+              <p className="mb-2 text-xs font-medium text-text-muted">{isEs ? "Palabra más larga" : "Longest word"}</p>
               <p className="truncate text-lg font-bold text-accent">{stats.longest}</p>
             </div>
           )}
           {stats.topKeywords.length > 0 && (
             <div className="rounded-xl border border-border/30 bg-surface/50 px-5 py-4">
-              <p className="mb-3 text-xs font-medium text-text-muted">Palabras más frecuentes</p>
+              <p className="mb-3 text-xs font-medium text-text-muted">{isEs ? "Palabras más frecuentes" : "Most frequent words"}</p>
               <div className="flex flex-wrap gap-2">
                 {stats.topKeywords.map(([word, count]) => (
                   <span key={word} className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs">

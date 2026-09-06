@@ -1,6 +1,6 @@
-# 📝 Contador de Palabras Gratis Online
+# Word Counter — Free Online Tool
 
-**Free Word Counter.** Count words, characters, sentences, paragraphs and unique words in real time. Estimate reading and speaking time. Analyze keyword density. No sign-up, no ads, 100% client-side.
+**Word Counter.** Count words, characters, sentences and paragraphs in real time. Reading time and keyword density. No sign-up, no ads, 100% client-side.
 
 🌐 **Demo en vivo / Live demo:** [miguelacm.es/tools/word-counter](https://miguelacm.es/tools/word-counter)
 
@@ -13,22 +13,17 @@
 
 ## ✨ Features
 
-- **6 métricas / 6 metrics:** Words, characters (with/without spaces), sentences, paragraphs, unique words
-- **Tiempo de lectura / Reading time:** Estimated at 200 wpm (reading) and 130 wpm (speaking)
-- **Palabra más larga / Longest word:** Highlighted in real time
-- **Densidad keywords / Keyword density:** Top 5 most frequent words excluding stop words (ES + EN)
-- **Tiempo real / Real time:** All metrics update instantly as you type
-- **Sin servidor / Zero server:** Everything runs in the browser — your text never leaves your device
-- **Embebible / Embeddable:** Use it as an iframe on any website
-- **Open source:** MIT license, use it freely
+- **📝 Live counts:** Words, characters, sentences and paragraphs update as you type.
+- **⏱️ Reading time:** Estimated reading time plus keyword density for SEO writing.
+- **🔒 100% private:** Everything is computed locally while you write. Nothing is uploaded.
 
 ---
 
 ## 🚀 Quick start
 
 ```bash
-git clone https://github.com/m-a-c-m/word-counter.git
-cd word-counter
+git clone https://github.com/m-a-c-m/ContadorPalabras.git
+cd ContadorPalabras
 npm install
 npm run dev
 ```
@@ -38,14 +33,13 @@ Open [http://localhost:3000](http://localhost:3000).
 ### Environment variables (optional)
 
 ```env
-NEXT_PUBLIC_SITE_URL=https://words.miguelacm.es
+NEXT_PUBLIC_SITE_URL=https://miguelacm.es/tools/word-counter
+NEXT_PUBLIC_EMBED_URL=https://miguelacm.es/embed/word-counter
 ```
 
 ---
 
 ## 📦 Embed on your website
-
-### Iframe (plug & play)
 
 ```html
 <iframe
@@ -53,7 +47,7 @@ NEXT_PUBLIC_SITE_URL=https://words.miguelacm.es
   width="100%"
   height="700"
   style="border:none;border-radius:12px;"
-  title="Contador de Palabras — miguelacm.es"
+  title="Word Counter — miguelacm.es"
   loading="lazy"
 ></iframe>
 ```
@@ -62,11 +56,11 @@ NEXT_PUBLIC_SITE_URL=https://words.miguelacm.es
 
 ```html
 <a href="https://miguelacm.es/tools/word-counter" target="_blank" rel="noopener">
-  Contador de palabras gratis por MACM
+  Word Counter — free tool by MACM
 </a>
 ```
 
-> 💡 The link option generates a real backlink that benefits the project. Recommended if your platform supports custom HTML.
+> 💡 The link option generates a real backlink that benefits the project.
 
 ---
 
@@ -74,7 +68,7 @@ NEXT_PUBLIC_SITE_URL=https://words.miguelacm.es
 
 | Technology | Version | Purpose |
 |---|---|---|
-| [Next.js](https://nextjs.org) | 16 | React framework + SSG |
+| [Next.js](https://nextjs.org) | 16 | React framework |
 | [TypeScript](https://www.typescriptlang.org) | 5 | Type safety |
 | [Tailwind CSS](https://tailwindcss.com) | 4 | Styling |
 | [react-icons](https://react-icons.github.io/react-icons/) | 5 | Icons |
